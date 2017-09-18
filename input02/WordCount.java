@@ -43,39 +43,39 @@ public class WordCount extends Configured implements Tool {
   public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
     private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
-    private long numRecords = 0;    
+    private long numRecords = 0;
     private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
     private boolean caseSensitive = false;
 
     protected void setup(Mapper.Context context)
-	throws IOException,
-	InterruptedException {
+    throws IOException,
+      InterruptedException {
       Configuration config = context.getConfiguration();
       this.caseSensitive = config.getBoolean("wordcount.case.sensitive", false);
     }
 
 
     public void map(LongWritable offset, Text lineText, Context context)
-        throws IOException, InterruptedException {
+    throws IOException, InterruptedException {
       String line = lineText.toString();
       if (!caseSensitive) {
-	line = line.toLowerCase();
+        line = line.toLowerCase();
       }
       Text currentWord = new Text();
       for (String word : WORD_BOUNDARY.split(line)) {
         if (word.isEmpty()) {
-            continue;
+          continue;
         }
-            currentWord = new Text(word);
-            context.write(currentWord,one);
-        }
+        currentWord = new Text(word);
+        context.write(currentWord, one);
+      }
     }
   }
 
   public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
     @Override
     public void reduce(Text word, Iterable<IntWritable> counts, Context context)
-        throws IOException, InterruptedException {
+    throws IOException, InterruptedException {
       int sum = 0;
       for (IntWritable count : counts) {
         sum += count.get();
