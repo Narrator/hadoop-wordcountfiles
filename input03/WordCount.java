@@ -37,7 +37,7 @@ public class WordCount extends Configured implements Tool {
   }
 
   public int run(String[] args) throws Exception {
-    Job job = Job.getInstance(getConf(), "wordcount"); :
+    Job job = Job.getInstance(getConf(), "wordcount");
     for (int i = 0; i < args.length; i += 1) {
       if ("-skip".equals(args[i])) {
         job.getConfiguration().setBoolean("wordcount.skip.patterns", true);
